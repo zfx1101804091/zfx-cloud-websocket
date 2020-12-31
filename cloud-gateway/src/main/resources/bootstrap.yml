@@ -1,0 +1,21 @@
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+      config:
+        server-addr: 127.0.0.1:8848
+    gateway:
+      routes:
+        - id: cloud-websocket
+          uri: lb:ws://cloud-websocket
+          predicates:
+            - Path=/api/chat/**
+          filters:
+            - StripPrefix=1
+        - id: ts
+          uri: lb://cloud-websocket
+          predicates:
+            - Path=/api/ts/** #判断匹配条件,即地址带有/ribbon/**的请求,会转发至lb:RIBBON-CONSUMER
+          filters:
+            - StripPrefix=1 #去掉Path前缀,参数为1代表去掉/ribbon
